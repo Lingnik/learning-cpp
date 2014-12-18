@@ -1,0 +1,78 @@
+titan:c2 lingnik$ g++ -std=c++11 -o hw hw.cpp
+In file included from hw.cpp:1:
+./../../std_lib_facilities.h:107:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+./../../std_lib_facilities.h:113:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+2 warnings generated.
+titan:c2 lingnik$ g++ -std=c++11 -o hw1 hw1.cpp
+hw1.cpp:4:3: error: use of undeclared identifier 'cout'
+  cout << "Hello, World!\n";
+  ^
+hw1.cpp:5:3: error: use of undeclared identifier 'keep_window_open'
+  keep_window_open();
+  ^
+2 errors generated.
+titan:c2 lingnik$ g++ -std=c++11 -o hw2 hw2.cpp
+hw2.cpp:1:10: fatal error: '../../std_facilities.h' file not found
+#include "../../std_facilities.h"
+         ^
+1 error generated.
+titan:c2 lingnik$ g++ -std=c++11 -o hw3 hw3.cpp
+In file included from hw3.cpp:1:
+./../../std_lib_facilities.h:107:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+./../../std_lib_facilities.h:113:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+hw3.cpp:4:11: warning: missing terminating '"' character [-Winvalid-pp-token]
+  cout << "Hello, World!\n;
+          ^
+hw3.cpp:4:11: error: expected expression
+3 warnings and 1 error generated.
+titan:c2 lingnik$ g++ -std=c++11 -o hw4 hw4.cpp
+In file included from hw4.cpp:1:
+./../../std_lib_facilities.h:107:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+./../../std_lib_facilities.h:113:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+hw4.cpp:2:1: error: unknown type name 'integer'
+integer main()
+^
+2 warnings and 1 error generated.
+titan:c2 lingnik$ g++ -std=c++11 -o hw5 hw5.cpp
+In file included from hw5.cpp:1:
+./../../std_lib_facilities.h:107:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+./../../std_lib_facilities.h:113:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+hw5.cpp:4:8: warning: result of comparison against a string literal is unspecified (use strncmp instead) [-Wstring-compare]
+  cout < "Hello, World!\n";
+       ^ ~~~~~~~~~~~~~~~~~
+hw5.cpp:4:8: error: invalid operands to binary expression ('ostream' (aka 'basic_ostream<char>') and 'const char *')
+  cout < "Hello, World!\n";
+  ~~~~ ^ ~~~~~~~~~~~~~~~~~
+3 warnings and 1 error generated.
+titan:c2 lingnik$ g++ -std=c++11 -o hw6 hw6.cpp
+In file included from hw6.cpp:1:
+./../../std_lib_facilities.h:107:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+./../../std_lib_facilities.h:113:22: warning: comparison of unsigned expression < 0 is always false [-Wtautological-compare]
+                if (i<0||size()<=i) throw Range_error(i);
+                    ~^~
+hw6.cpp:4:11: warning: multi-character character constant [-Wmultichar]
+  cout << 'Hello, World!\n';
+          ^
+hw6.cpp:4:11: warning: character constant too long for its type
+4 warnings generated.
+titan:c2 lingnik$
+
+
