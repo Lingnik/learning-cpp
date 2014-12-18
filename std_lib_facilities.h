@@ -1,5 +1,9 @@
 /*
-        simple "Programming: Principles and Practice using C++" course header to
+   std_lib_facilities.h
+*/
+
+/*
+        simple "Programming: Principles and Practice using C++ (second edition)" course header to
         be used for the first few weeks.
         It provides the most common standard headers (in the global namespace)
         and minimal exception/error support.
@@ -8,48 +12,38 @@
         All will be explained. This header is primarily used so that you don't have
         to understand every concept all at once.
 
+        By Chapter 10, you don't need this file and after Chapter 21, you'll understand it
+
         Revised April 25, 2010: simple_error() added
+        
+        Revised November 25 2013: remove support for pre-C++11 compilers, use C++11: <chrono>
+        Revised November 28 2013: add a few container algorithms
+        Revised June 8 2014: added #ifndef to workaround Microsoft C++11 weakness
 */
 
 #ifndef H112
-#define H112 201004L
+#define H112 251113L
+
 
 #include<iostream>
+#include<iomanip>
 #include<fstream>
 #include<sstream>
 #include<cmath>
 #include<cstdlib>
 #include<string>
 #include<list>
+#include <forward_list>
 #include<vector>
+#include<unordered_map>
 #include<algorithm>
+#include <array>
+#include <regex>
+#include<random>
 #include<stdexcept>
 
 //------------------------------------------------------------------------------
 
-#ifdef _MSC_VER
-#include <hash_map>
-using stdext::hash_map;
-#else
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
-
-namespace __gnu_cxx {
-
-    template<> struct hash<std::string>
-    {
-        size_t operator()(const std::string& s) const
-        {
-            return hash<char*>()(s.c_str());
-        }
-    };
-
-} // of namespace __gnu_cxx
-#endif
-
-//------------------------------------------------------------------------------
-
-#define unordered_map hash_map
 
 //------------------------------------------------------------------------------
 
@@ -74,13 +68,19 @@ struct Range_error : out_of_range {     // enhanced vector range error reporting
 
 // trivially range-checked vector (no iterator checking):
 template< class T> struct Vector : public std::vector<T> {
-        typedef typename std::vector<T>::size_type size_type;
+        using size_type = typename std::vector<T>::size_type;
 
+#ifdef _MSC_VER
+        // microsoft doesn't yet support C++11 inheriting constructors
         Vector() { }
         explicit Vector(size_type n) :std::vector<T>(n) {}
         Vector(size_type n, const T& v) :std::vector<T>(n,v) {}
         template <class I>
-        Vector(I first, I last) :std::vector<T>(first,last) {}
+        Vector(I first, I last) : std::vector<T>(first, last) {}
+        Vector(initializer_list<T> list) : std::vector<T>(list) {}
+#else
+        using std::vector<T>::vector;   // inheriting constructor
+#endif
 
         T& operator[](unsigned int i) // rather than return at(i);
         {
@@ -99,13 +99,8 @@ template< class T> struct Vector : public std::vector<T> {
 
 // trivially range-checked string (no iterator checking):
 struct String : std::string {
-        
-        String() { }
-        String(const char* p) :std::string(p) {}
-        String(const string& s) :std::string(s) {}
-        template<class S> String(S s) :std::string(s) {}
-        String(int sz, char val) :std::string(sz,val) {}
-        template<class Iter> String(Iter p1, Iter p2) : std::string(p1,p2) { }
+        using size_type = std::string::size_type;
+//      using string::string;
 
         char& operator[](unsigned int i) // rather than return at(i);
         {
@@ -120,8 +115,8 @@ struct String : std::string {
         }
 };
 
-#ifndef _MSC_VER
-namespace __gnu_cxx {
+
+namespace std {
 
     template<> struct hash<String>
     {
@@ -131,8 +126,7 @@ namespace __gnu_cxx {
         }
     };
 
-} // of namespace __gnu_cxx
-#endif
+} // of namespace std
 
 
 struct Exit : runtime_error {
@@ -157,12 +151,6 @@ inline void error(const string& s, int i)
         error(os.str());
 }
 
-#if _MSC_VER<1500
-        // disgusting macro hack to get a range checked string:
-        #define string String
-        // MS C++ 9.0 have a built-in assert for string range check
-        // and uses "std::string" in several places so that macro substitution fails
-#endif
 
 template<class T> char* as_bytes(T& i)  // needed for binary I/O
 {
@@ -198,25 +186,19 @@ inline void keep_window_open(string s)
 
 
 // error function to be used (only) until error() is introduced in Chapter 5:
-inline void simple_error(string s)      // write ``error: s�� and exit program
+inline void simple_error(string s)      // write ``error: s and exit program
 {
         cerr << "error: " << s << '\n';
         keep_window_open();             // for some Windows environments
         exit(1);
 }
 
-// make std::min() and std::max() accessible:
+// make std::min() and std::max() accessible on systems with antisocial macros:
 #undef min
 #undef max
 
-#include<iomanip>
-inline ios_base& general(ios_base& b)   // to augment fixed and scientific
-{
-        b.setf(ios_base::fmtflags(0),ios_base::floatfield);
-        return b;
-}
 
-// run-time checked narrowing cast (type conversion):
+// run-time checked narrowing cast (type conversion). See ???.
 template<class R, class A> R narrow_cast(const A& a)
 {
         R r = R(a);
@@ -224,12 +206,51 @@ template<class R, class A> R narrow_cast(const A& a)
         return r;
 }
 
+// random number generators. See 24.7.
 
-inline int randint(int max) { return rand()%max; }
 
-inline int randint(int min, int max) { return randint(max-min)+min; }
 
-inline double sqrt(int x) { return sqrt(double(x)); }   // to match C++0x
+inline int randint(int min, int max) { static default_random_engine ran; return uniform_int_distribution<>{min, max}(ran); }
 
-#endif
+inline int randint(int max) { return randint(0, max); }
+
+//inline double sqrt(int x) { return sqrt(double(x)); } // to match C++0x
+
+// container algorithms. See 21.9.
+
+template<typename C>
+using Value_type = typename C::value_type;
+
+template<typename C>
+using Iterator = typename C::iterator;
+
+template<typename C>
+        // requires Container<C>()
+void sort(C& c)
+{
+        std::sort(c.begin(), c.end());
+}
+
+template<typename C, typename Pred>
+// requires Container<C>() && Binary_Predicate<Value_type<C>>()
+void sort(C& c, Pred p)
+{
+        std::sort(c.begin(), c.end(), p);
+}
+
+template<typename C, typename Val>
+        // requires Container<C>() && Equality_comparable<C,Val>()
+Iterator<C> find(C& c, Val v)
+{
+        return std::find(c.begin(), c.end(), v);
+}
+
+template<typename C, typename Pred>
+// requires Container<C>() && Predicate<Pred,Value_type<C>>()
+Iterator<C> find_if(C& c, Pred p)
+{
+        return std::find_if(c.begin(), c.end(), p);
+}
+
+#endif //H112
 
