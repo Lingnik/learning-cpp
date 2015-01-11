@@ -8,7 +8,7 @@
 
 int main()
 {
-    const double pi = 3.14159265359;
+    constexpr double pi = 3.14159265359;
     //pi = 7;           // error: assignment to const
     int r = 7;
     int v = 2*pi/r;     // ok: we just read pi; we don't try to change it
