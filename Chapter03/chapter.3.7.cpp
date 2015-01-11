@@ -18,7 +18,7 @@ int main()
     cout << s << '\n';
 
     //int if = 7;                        // error: "if" is a keyword 
-    //int string = 7;                    // this will lead to trouble
+    int string = 7;                    // this will lead to trouble
 }
 
 //------------------------------------------------------------------------------

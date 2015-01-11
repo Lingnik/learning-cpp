@@ -12,8 +12,9 @@
 int main()
 {
     cout << "please enter a floating-point value: ";
-    double n;
+    int n;
     cin >> n;    
+    double o = n;
     cout << "n == " << n
          << "\nn+1 == " << n+1
          << "\nthree times n == " << 3*n

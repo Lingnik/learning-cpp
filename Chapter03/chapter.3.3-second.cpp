@@ -14,9 +14,10 @@ int main()
     cout << "please enter your first_name and age\n";
     string first_name = "???"; // string variable
                                // ("???" means "don't know the name")
-    int age = -1;              // integer variable (-1 means "don't know the age") 
+    double age = -1;              // integer variable (-1 means "don't know the age") 
     cin >> first_name >> age;  // read a string followed by an integer
-    cout << "Hello, " << first_name << " (age " << age << ")\n";    
+    double age_months = age * 12;
+    cout << "Hello, " << first_name << " (age " << age_months << " months)\n";    
 }
 
 //------------------------------------------------------------------------------
